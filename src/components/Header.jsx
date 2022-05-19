@@ -10,6 +10,7 @@ import Registro from "./Registro";
 import SenhaEsquecida from "./SenhaEsquecida";
 import Topmenu from "./Topmenu";
 import axios from "axios";
+import ResetSenha from "./ResetSenha";
 
 
 class Header extends Component {
@@ -48,24 +49,13 @@ class Header extends Component {
                 this.setLoggedIn(true);
             })
             .catch((error) => {
-                //   console.log(error.response.data.message);
-                console.log(error);
+                console.log(error.response.data.message);
             })
     }
 
     componentDidMount() {
-            this.getUser();
+        this.getUser();
     }
-
-
-    // ANDA NAO ESTA FUNCIONANDO. É PRECISO ACESSAR O STATE/PROP DO PERFIl (OU LOGIN)
-    // NAO DEIXAR DE LER SOBRE CONTEXT
-
-    /*    componentDidUpdate(prevProps, prevState, snapshot) {
-            if (prevState.user !== this.state.user || prevProps.user !== this.props.user) {
-                this.forceUpdate();
-            }
-        }*/
 
     render() {
 
@@ -82,6 +72,7 @@ class Header extends Component {
                     <Route path="perfil" element={<Perfil />} />
                     <Route path="registro" element={<Registro />} />
                     <Route path="recuperar_senha" element={<SenhaEsquecida />} />
+                    <Route path="/reset_senha/:token" element={<ResetSenha loggedIn={this.state.loggedIn} />}/>
                 </Routes>
             </UserContext.Provider>
         );

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Button, Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
-import {NavLink} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import axios from "axios";
 import {UserContext} from "./UserContext";
 
@@ -12,7 +12,6 @@ class Topmenu extends Component {
         this.logOut = this.logOut.bind(this);
 
     }
-
 
     static contextType = UserContext;
 
@@ -43,7 +42,7 @@ class Topmenu extends Component {
         if (localStorage.getItem('token')) {
             buttons = (
                 <Nav className="text-end">
-               <Button type="button" className="btn btn-outline-info me-2 text-white" onClick={this.logOut}><i className="bi bi-box-arrow-up-right" /> Sair</Button>
+            <Link to="/"><Button link="/" type="button" className="btn btn-outline-info me-2 text-white" onClick={this.logOut}><i className="bi bi-box-arrow-up-right" /> Sair</Button></Link>
                 </Nav>
             )
             perfil = (
