@@ -255,7 +255,6 @@ function NovoRegistro() {
                     </Row>
                 </Col>
                 <Col lg={4}>
-                    <Button variant={"success"} onClick={()=>console.log(process.env.REACT_APP_VERSION)}>Show env value</Button>
                     <Form onSubmit={handleSubmit}>
                         <Card.Body>
                             {pontos ? (<Form.Group controlId="ponto" className="py-2">

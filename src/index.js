@@ -16,12 +16,10 @@ axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getIte
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-
         <BrowserRouter>
         <Header />
         <Footer />
         </BrowserRouter>
-
 );
 
 // If you want to start measuring performance in your app, pass a function
