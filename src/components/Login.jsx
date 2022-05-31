@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Card, Form} from "react-bootstrap";
+import {Button, Card, Form, Modal} from "react-bootstrap";
 import {Link, Navigate } from "react-router-dom";
 import axios from "axios";
 import {UserContext} from "./UserContext";
@@ -11,7 +11,10 @@ class Login extends Component {
     state = {
         email: '',
         password: '',
-        user: {}
+        user: {},
+        modalShow: false,
+        hasError: '',
+        message:''
     }
 
     defineUser = (data) => {
@@ -33,13 +36,23 @@ class Login extends Component {
                     .then((response) => {
                         localStorage.setItem('token', response.data.token);
                         this.setState({loggedIn: true});
-             //           this.setState({user:response.data});
                         this.defineUser(response.data);
                     })
                     .catch((error) => {
-                        //console.log(error.response.data.message);
-                        console.log(error)
+                        try {
+                            this.setState({message:error.response.data.errors.password.map((item)=>(<p>{item}</p>))});
+                        } catch {
+                            this.setState({message:error.response.data.message});
+                        }
+                        this.setState({hasError:true});
+                        this.setState({modalShow:true});
                     })
+    }
+
+    handleOkButton = () => {
+        if (this.state.hasError) {
+            this.setState({modalShow:false})
+        }
     }
 
     render() {
@@ -47,12 +60,36 @@ class Login extends Component {
         if (this.context.loggedIn)
         {
             return (
-                <Navigate to="/perfil" />
+                <Navigate to="/usuario" />
             );
+        }
+
+        let modal = '';
+        if (this.state.modalShow){
+            modal =
+                (
+                    <Modal
+                        size="lg"
+                        aria-labelledby="contained-modal-title-vcenter"
+                        centered
+                        show={this.state.modalShow}
+                    >
+                        <Modal.Body style={this.state.hasError ? {backgroundColor: "tomato"} : {backgroundColor: "LightGreen"}}>
+                            <h5>{this.state.message}</h5>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <div style={{margin: "auto"}}>
+                                <Button className={this.state.hasError ? "btn btn-danger btn-lg" : "btn btn-success btn-lg"} onClick={this.handleOkButton}>OK</Button>
+                            </div>
+                        </Modal.Footer>
+
+                    </Modal>
+                )
         }
 
         return (
             <div className="container-sm">
+                {modal}
                 <br/><br/><br/><br/>
                 <div className="row">
                     <div className="col-md-6 offset-md-3">
@@ -64,7 +101,7 @@ class Login extends Component {
                                         <Card.Title><Form.Label>Endereço de e-mail</Form.Label></Card.Title>
                                         <Form.Control type="email" placeholder="Seu e-mail..." required onChange={(e)=>{this.setState({email:e.target.value})}} />
                                         <Card.Text><Form.Text className="text-muted">
-                                            Seu endereço de e-mail não será compartilhado com ninguem.
+                                            Seu endereço de e-mail não será compartilhado com ningúem.
                                         </Form.Text></Card.Text>
                                     </Form.Group>
 
@@ -81,8 +118,8 @@ class Login extends Component {
                                         </Button>
                                     </div>
                                     <br/>
-                                    <Form.Text as={Link} to="/recuperar_senha" style={{textDecoration: "none"}}>
-                                        Esqueceu a senha?</Form.Text>
+                                    <Card.Text><Link to="/recuperar_senha" style={{textDecoration: "none"}}>
+                                        Esqueceu a senha?</Link></Card.Text>
                                 </Card.Body>
                             </Form>
                         </Card>

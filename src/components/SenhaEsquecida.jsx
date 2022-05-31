@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Card, Form} from "react-bootstrap";
+import {Button, Card, Form, Modal} from "react-bootstrap";
 import {Link, Navigate} from "react-router-dom";
 import axios from "axios";
 import {UserContext} from "./UserContext";
@@ -9,10 +9,10 @@ class SenhaEsquecida extends Component {
     static contextType = UserContext;
 
     state = {
-        email: ''
+        email: '',
+        modalShow: false,
+        hasError: ''
     }
-
-
 
     formSubmit = (e) => {
         e.preventDefault();
@@ -20,33 +20,75 @@ class SenhaEsquecida extends Component {
         const data = {
             email: this.state.email
         }
+
         axios.post('/reset_password', data)
             .then((response) => {
-                console.log(response.data.message)
+               document.getElementById("form-senha-esquecida").reset();
+                this.setState({message:response.data.message});
+                this.setState({hasError:false});
+                this.setState({modalShow:true});
             })
             .catch((error) => {
-                //   console.log(error.response.data.message);
-                console.log(error.response.data.message);
+                try {
+                    this.setState({message:error.response.data.errors.password.map((item)=>(<p>{item}</p>))});
+                } catch {
+                    this.setState({message:error.response.data.message});
+                }
+                this.setState({hasError:true});
+                this.setState({modalShow:true});
             })
     }
+
+    handleOkButton = () => {
+        if (this.state.hasError) {
+            this.setState({modalShow:false})
+        } else {
+            window.location.replace("/");
+        }
+    }
+
 
     render() {
 
         if (this.context.loggedIn)
         {
             return (
-                <Navigate to="/perfil" />
+                <Navigate to="/usuario" />
             );
+        }
+
+        let modal = '';
+        if (this.state.modalShow){
+            modal =
+                (
+                    <Modal
+                        size="lg"
+                        aria-labelledby="contained-modal-title-vcenter"
+                        centered
+                        show={this.state.modalShow}
+                    >
+                        <Modal.Body style={this.state.hasError ? {backgroundColor: "tomato"} : {backgroundColor: "LightGreen"}}>
+                            <h5>{this.state.message}</h5>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <div style={{margin: "auto"}}>
+                                <Button className={this.state.hasError ? "btn btn-danger btn-lg" : "btn btn-success btn-lg"} onClick={this.handleOkButton}>OK</Button>
+                            </div>
+                        </Modal.Footer>
+
+                    </Modal>
+                )
         }
 
         return (
             <div className="container-sm">
+                { modal }
                 <br/><br/><br/><br/>
                 <div className="row">
                     <div className="col-md-6 offset-md-3">
                         <Card>
                             <Card.Header as="h5" className="bg-primary text-white"><i className="bi bi-file-earmark-lock" /> Recuperar senha</Card.Header>
-                            <Form onSubmit={this.formSubmit}>
+                            <Form onSubmit={this.formSubmit} id="form-senha-esquecida">
                                 <Card.Body>
                                     <Form.Group className="mb-3" controlId="email">
                                         <Card.Title><Form.Label>Endereço de e-mail</Form.Label></Card.Title>

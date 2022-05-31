@@ -10,18 +10,18 @@ import {BrowserRouter} from "react-router-dom";
 
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'http://localhost:8000/api';
-axios.get('../sanctum/csrf-cookie').then((response) => {console.log('XSRF Cookie Status: ' + response.status)});
+//axios.defaults.baseURL = 'http://localhost:8000/api';
+axios.defaults.baseURL = 'http://192.168.0.158:8000/api';
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
+
         <BrowserRouter>
         <Header />
         <Footer />
         </BrowserRouter>
-    </React.StrictMode>
+
 );
 
 // If you want to start measuring performance in your app, pass a function
