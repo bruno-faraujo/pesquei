@@ -83,10 +83,8 @@ class Perfil extends Component {
                                                 className="bi bi-card-image"></i> Galeria de fotos</Dropdown.Item>
                                             <Dropdown.Item as={NavLink} to="novo_ponto" className="py-3"><i
                                                 className="bi bi-pin-angle"></i> Criar novo ponto</Dropdown.Item>
-                                            <Dropdown.Item as={NavLink} to="estatisticas" className="py-3"><i
-                                                className="bi bi-graph-up-arrow"></i> Estatísticas</Dropdown.Item>
                                             <Dropdown.Item as={NavLink} to="edita_perfil" className="py-3"><i
-                                                className="bi bi-pencil-square"></i> Editar pefil</Dropdown.Item>
+                                                className="bi bi-pencil-square"></i> Configurações</Dropdown.Item>
                                         </DropdownButton>
                                     </Col>
                                     <Col>

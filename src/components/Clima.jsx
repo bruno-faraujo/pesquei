@@ -86,21 +86,21 @@ function Clima() {
             <>
                 <Card>
                     <Card.Header><span className="h5 text-nowrap"><i className="bi bi-pin-map-fill"></i> {clima.cidade}, {clima.estado}</span> <span className="h2"> <Badge text="dark" bg="info"><i className="bi bi-thermometer-high"/>{parseFloat(clima.main_temp).toFixed(0)}°C</Badge></span></Card.Header>
-                    <Card.Body style={{backgroundColor: "Gainsboro"}}>
+                    <Card.Body style={{backgroundColor: "White"}}>
                         <Container>
                             <Row>
-                                <Col sm={4} className="text-center">
-                                    <div className="py-0"><img style={{maxWidth: "140px"}} src={iconUrl} alt={clima.weather_description} /></div>
+                                <Col sm={4} lg={4} className="text-center">
+                                    <span className="py-0 text-nowrap"><img style={{maxWidth: "140px"}} src={iconUrl} alt={clima.weather_description} /></span>
                                 </Col>
-                                <Col sm={6}>
+                                <Col sm={6} lg={6} md={12}>
                                     <ListGroup variant="flush" style={{marginBottom: "10px"}}>
-                                        <ListGroup.Item>{clima.weather_description.charAt(0).toUpperCase() + clima.weather_description.slice(1)}</ListGroup.Item>
-                                        <ListGroup.Item><i className="bi bi-wind" /> Vento {(parseFloat(clima.wind_speed) * 3.6).toFixed(1)} Km/h</ListGroup.Item>
-                                        <ListGroup.Item><i className="bi bi-arrows-collapse" />Pressão {clima.main_pressure} hPa</ListGroup.Item>
-                                        <ListGroup.Item><i className="bi bi-droplet" />Umidade do ar {clima.main_humidity} %</ListGroup.Item>
+                                        <ListGroup.Item className="text-nowrap">{clima.weather_description.charAt(0).toUpperCase() + clima.weather_description.slice(1)}</ListGroup.Item>
+                                        <ListGroup.Item className="text-nowrap"><i className="bi bi-wind" /> Vento {(parseFloat(clima.wind_speed) * 3.6).toFixed(1)} Km/h</ListGroup.Item>
+                                        <ListGroup.Item className="text-nowrap"><i className="bi bi-arrows-collapse" />Pressão {clima.main_pressure} hPa</ListGroup.Item>
+                                        <ListGroup.Item className="text-nowrap"><i className="bi bi-droplet" />Umidade do ar {clima.main_humidity} %</ListGroup.Item>
                                     </ListGroup>
                                 </Col>
-                                <Col sm={2}>
+                                <Col sm={2} lg={2}>
                                     <Button variant="outline-dark" className="btn btn-sm p-1" onClick={mudarCidade}><i className="bi bi-arrow-left-right" />  Mudar cidade</Button>
                                 </Col>
                             </Row>

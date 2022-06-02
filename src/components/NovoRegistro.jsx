@@ -21,6 +21,7 @@ function NovoRegistro() {
     const [mapInstance, setMapInstance] = useState(null);
     const [currentPosition, setCurrentPosition] = useState(false);
     const [semPontos, setSemPontos] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const containerStyle = {
         height: "50vh",
         borderRadius: "0.25rem"
@@ -48,6 +49,16 @@ function NovoRegistro() {
                 setModalShow(true);
                 setSemPontos(true);
             })
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setCurrentPosition({
+                    lat: parseFloat(position.coords.latitude),
+                    lng: parseFloat(position.coords.longitude)
+                });
+                setCenter(currentPosition)
+            }
+        )
     }, [])
 
 
@@ -71,33 +82,32 @@ function NovoRegistro() {
                     }
                 },
                 (error) => {
-                    // error callback
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            setMessage("User denied the request for Geolocation.")
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            setMessage("Location information is unavailable.")
+                            break;
+                        case error.TIMEOUT:
+                            setMessage("The request to get user location timed out.")
+                            break;
+                        case error.UNKNOWN_ERROR:
+                            setMessage("An unknown error occurred.")
+                            break;
+                    }
+                    setHasError(true)
+                    setModalShow(true)
                 },
                 {
                     enableHighAccuracy: true,
-                    timeout: 10000
+                    timeout: 60000
                 }
             )
-        } else if (localStorage.getItem('clima.cidade') && localStorage.getItem('clima.estado')) {
-            axios.post("/request_coordenadas", {
-                cidade: localStorage.getItem('clima.cidade'),
-                estado: localStorage.getItem('clima.estado')
-            })
-                .then((response) => {
-                    setCurrentPosition({
-                        lat: parseFloat(response.data.lat),
-                        lng: parseFloat(response.data.lon)
-                    })
-
-                    if (!center) {
-                        setCenter(currentPosition)
-                    }
-                })
         } else {
-            setCurrentPosition({lat: parseFloat(-6.640814), lng: parseFloat(-34.757842)})
-            if (!center) {
-                setCenter(currentPosition)
-            }
+            setMessage("Para usar esse recurso você precisa permitir a localização do dispositivo pelo navegador.")
+            setHasError(true)
+            setModalShow(true)
         }
     }, [currentPosition])
 
@@ -130,7 +140,8 @@ function NovoRegistro() {
     }
 
     const handleSubmit = (e) => {
-
+        document.documentElement.scrollTo(0, 0)
+        setSubmitting(true)
         e.preventDefault();
 
 
@@ -141,7 +152,7 @@ function NovoRegistro() {
         formData.append("peixe_id", peixeSelected);
 
         if (comprimento) {
-            formData.append("comprimento", parseInt(comprimento,10));
+            formData.append("comprimento", parseInt(comprimento, 10));
         }
 
         if (peso) {
@@ -166,16 +177,18 @@ function NovoRegistro() {
             })
             .catch((error) => {
                 try {
-                    setMessage(error.data.errors.foto.map((item)=>(<p>{item}</p>)))
+                    setMessage(error.data.errors.foto.map((item) => (<p>{item}</p>)))
                 } catch {
                     setMessage(error.response.data.message);
                 }
+                setSubmitting(false)
                 setHasError(true);
                 setModalShow(true);
             })
     }
 
     const handleOkButton = () => {
+        document.documentElement.scrollTo(0, 0)
         if (semPontos) {
             navigate("/usuario", {replace: true});
         }
@@ -183,13 +196,13 @@ function NovoRegistro() {
             setModalShow(false)
         } else {
             setModalShow(false)
-            navigate("/usuario", {replace: true});
+            window.location.reload();
         }
     }
 
 
     let modal = '';
-    if (modalShow){
+    if (modalShow) {
         modal =
             (
                 <Modal
@@ -203,7 +216,8 @@ function NovoRegistro() {
                     </Modal.Body>
                     <Modal.Footer>
                         <div style={{margin: "auto"}}>
-                            <Button className={hasError ? "btn btn-danger btn-lg" : "btn btn-success btn-lg"} onClick={handleOkButton}>OK</Button>
+                            <Button className={hasError ? "btn btn-danger btn-lg" : "btn btn-success btn-lg"}
+                                    onClick={handleOkButton}>OK</Button>
                         </div>
                     </Modal.Footer>
 
@@ -214,96 +228,105 @@ function NovoRegistro() {
     return isLoaded ? (
         <Card>
             {modal}
-            <Card.Header as="h5" className="bg-warning text-black"><i className="bi bi-person-plus-fill"/> Registrar
+            <Card.Header as="h5" className="bg-warning text-black">
+                <i className="bi bi-file-earmark-plus">
+                </i> Registrar
                 peixe pescado</Card.Header>
-            <Row>
-                <Col lg={8}>
-                    <GoogleMap
-                        mapContainerStyle={containerStyle}
-                        center={center ? center : null}
-                        zoom={15}
-                        options={options}
-                        onLoad={onMapLoad}
-                    >
+            {center ? (<Row>
+                    <Col lg={8}>
+                        <GoogleMap
+                            mapContainerStyle={containerStyle}
+                            center={center ? center : null}
+                            zoom={15}
+                            options={options}
+                            onLoad={onMapLoad}
+                        >
 
-                        { /* Child components, such as markers, info windows, etc.*/}
-                        {currentPosition ? (<Marker key="current-position"
-                                                    position={{lat: currentPosition.lat, lng: currentPosition.lng}}
-                                                    icon="http://maps.google.com/mapfiles/kml/pal3/icon28.png"/>) : ""}
-                        {pontos ? <MarkerClusterer>
-                            {(clusterer) => pontos.map((ponto) => (
-                                <Marker id={ponto.id}
-                                        latitude={parseFloat(ponto.latitude)}
-                                        longitude={parseFloat(ponto.longitude)}
-                                        key={ponto.id}
-                                        position={{
-                                            lat: parseFloat(ponto.latitude),
-                                            lng: parseFloat(ponto.longitude),
-                                        }}
-                                        title={ponto.nome}
-                                        clusterer={clusterer}
-                                        onClick={onMarkerClick.bind(this, ponto)}
-                                />
-                            ))}
-                        </MarkerClusterer> : ""}
-                    </GoogleMap>
-                    <Row>
-                        <Col>
-                            {<Button variant="success" onClick={() => centerMap(currentPosition)}>Centralizar
-                                mapa</Button>}
-                        </Col>
-                    </Row>
-                </Col>
-                <Col lg={4}>
-                    <Form onSubmit={handleSubmit}>
-                        <Card.Body>
-                            {pontos ? (<Form.Group controlId="ponto" className="py-2">
-                                <Form.Label as="h6">Selecione o ponto</Form.Label>
-                                <Form.Select aria-label="Selecione o ponto" value={selectedPonto}
-                                             onChange={handlePonto}>
-                                    <option>Ponto...</option>
-                                    {pontos.map((ponto) => (
-                                        <option key={"ponto-" + ponto.id} value={ponto.id}>{ponto.nome}</option>))}
-                                </Form.Select>
-                            </Form.Group>) : <Loading/>}
-                            {peixes ? <Form.Group controlId="peixe" className="py-2">
-                                <Form.Label as="h6">Peixe</Form.Label>
-                                <Form.Select aria-label="Selecione o peixe" value={peixeSelected}
-                                             onChange={handlePeixe}>
-                                    <option>Peixe...</option>
-                                    {peixes.map((peixe) => (
-                                        <option key={"peixe-" + peixe.nome} value={peixe.id}>{peixe.nome}</option>))}
-                                </Form.Select>
-                            </Form.Group> : <Loading/>}
-                            <Stack direction="horizontal" gap="2">
-                                <Form.Group controlId="comprimento" className="py-2">
-                                    <Card.Title><Form.Label as="h6">Comprimento</Form.Label></Card.Title>
-                                    <InputGroup size="sm">
-                                        <Form.Control size="sm" type="text" onChange={e=>setComprimento(e.target.value)}/>
-                                        <InputGroup.Text>cm</InputGroup.Text>
-                                    </InputGroup>
+                            { /* Child components, such as markers, info windows, etc.*/}
+                            {currentPosition ? (<Marker key="current-position"
+                                                        position={{lat: currentPosition.lat, lng: currentPosition.lng}}
+                                                        icon="https://maps.google.com/mapfiles/kml/pal3/icon28.png"/>) : ""}
+                            {pontos ? <MarkerClusterer>
+                                {(clusterer) => pontos.map((ponto) => (
+                                    <Marker id={ponto.id}
+                                            latitude={parseFloat(ponto.latitude)}
+                                            longitude={parseFloat(ponto.longitude)}
+                                            key={ponto.id}
+                                            position={{
+                                                lat: parseFloat(ponto.latitude),
+                                                lng: parseFloat(ponto.longitude),
+                                            }}
+                                            title={ponto.nome}
+                                            clusterer={clusterer}
+                                            onClick={onMarkerClick.bind(this, ponto)}
+                                    />
+                                ))}
+                            </MarkerClusterer> : ""}
+                        </GoogleMap>
+                        <Row>
+                            <Col className={"py-2 text-nowrap"}>
+                                {<Button variant="info" size={"sm"} onClick={() => centerMap(currentPosition)}><i
+                                    className="bi bi-bullseye"></i> Centralizar
+                                    mapa</Button>}
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col lg={4}>
+                        <Form onSubmit={handleSubmit}>
+                            <Card.Body>
+                                {pontos ? (<Form.Group controlId="ponto" className="py-2">
+                                    <Form.Label as="h6">Selecione o ponto</Form.Label>
+                                    <Form.Select aria-label="Selecione o ponto" value={selectedPonto}
+                                                 onChange={handlePonto}>
+                                        <option>Ponto...</option>
+                                        {pontos.map((ponto) => (
+                                            <option key={"ponto-" + ponto.id} value={ponto.id}>{ponto.nome}</option>))}
+                                    </Form.Select>
+                                </Form.Group>) : <Loading/>}
+                                {peixes ? <Form.Group controlId="peixe" className="py-2">
+                                    <Form.Label as="h6">Peixe</Form.Label>
+                                    <Form.Select aria-label="Selecione o peixe" value={peixeSelected}
+                                                 onChange={handlePeixe}>
+                                        <option>Peixe...</option>
+                                        {peixes.map((peixe) => (
+                                            <option key={"peixe-" + peixe.nome}
+                                                    value={peixe.id}>{peixe.nome}</option>))}
+                                    </Form.Select>
+                                </Form.Group> : <Loading/>}
+                                <Stack direction="horizontal" gap="2">
+                                    <Form.Group controlId="comprimento" className="py-2">
+                                        <Card.Title><Form.Label as="h6">Comprimento</Form.Label></Card.Title>
+                                        <InputGroup size="sm">
+                                            <Form.Control size="sm" type="text"
+                                                          onChange={e => setComprimento(e.target.value)}/>
+                                            <InputGroup.Text>cm</InputGroup.Text>
+                                        </InputGroup>
+                                    </Form.Group>
+                                    <Form.Group controlId="peso" className="py-2">
+                                        <Card.Title><Form.Label as="h6">Peso</Form.Label></Card.Title>
+                                        <InputGroup size="sm">
+                                            <Form.Control size="sm" type="text"
+                                                          onChange={e => setPeso(e.target.value)}/>
+                                            <InputGroup.Text>g</InputGroup.Text>
+                                        </InputGroup>
+                                    </Form.Group>
+                                </Stack>
+                                <Form.Group controlId="foto" as="h6" className="py-2">
+                                    <Form.Label>Foto do peixe</Form.Label>
+                                    <Form.Control size="sm" multi="false" type="file"
+                                                  onChange={e => setFoto(e.target.files[0])}/>
                                 </Form.Group>
-                                <Form.Group controlId="peso" className="py-2">
-                                    <Card.Title><Form.Label as="h6">Peso</Form.Label></Card.Title>
-                                    <InputGroup size="sm">
-                                        <Form.Control size="sm" type="text" onChange={e=>setPeso(e.target.value)}/>
-                                        <InputGroup.Text>g</InputGroup.Text>
-                                    </InputGroup>
-                                </Form.Group>
-                            </Stack>
-                            <Form.Group controlId="foto" as="h6" className="py-2" >
-                                <Form.Label>Foto do peixe</Form.Label>
-                                <Form.Control size="sm" multi="false" type="file" onChange={e=>setFoto(e.target.files[0])}/>
-                            </Form.Group>
-                            <Form.Group className="py-2">
-                                <Button variant="success" size="lg" type="submit">
-                                    Salvar
-                                </Button>
-                            </Form.Group>
-                        </Card.Body>
-                    </Form>
-                </Col>
-            </Row>
+                                {!submitting ? (<Form.Group className="py-2">
+                                    <Button variant="success" size="lg" type="submit">
+                                        <i className="bi bi-journal-check"></i> Salvar
+                                    </Button>
+                                </Form.Group>) : <Loading/>}
+
+                            </Card.Body>
+                        </Form>
+                    </Col>
+                </Row>
+            ) : <Loading/>}
         </Card>
     ) : <Loading/>
 }

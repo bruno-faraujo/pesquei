@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {Route, Routes} from "react-router-dom";
 import {UserContext} from "./UserContext";
 import Docs from "./Docs";
-import Recursos from "./Recursos";
 import Login from "./Login";
 import Perfil from "./Perfil";
 import Registro from "./Registro";
@@ -14,7 +13,6 @@ import App from "../App";
 import NovoRegistro from "./NovoRegistro";
 import GaleriaUsuario from "./GaleriaUsuario";
 import NovoPonto from "./NovoPonto";
-import Estatisticas from "./Estatisticas";
 import EditaPerfil from "./EditaPerfil";
 
 
@@ -46,13 +44,19 @@ class Header extends Component {
 
 
     getUser = () => {
-        axios.post('/user', {})
-            .then((response) => {
-                this.setUser(response.data);
-                this.setLoggedIn(true);
+        axios.get('../sanctum/csrf-cookie')
+            .then(()=> {
+                axios.post('/user', {})
+                    .then((response) => {
+                        this.setUser(response.data);
+                        this.setLoggedIn(true);
+                    })
+                    .catch((error) => {
+                        console.log(error.response.data.message);
+                    })
             })
             .catch((error) => {
-                console.log(error.response.data.message);
+                console.log(error.response.data);
             })
     }
 
@@ -68,16 +72,13 @@ class Header extends Component {
                     <Routes>
                         <Route path="/" element={<App/>}/>
                         <Route path="/docs" element={<Docs/>}/>
-                        <Route path="/recursos" element={<Recursos/>}/>
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/usuario" element={<Perfil/>}>
                             <Route path="novo_registro" element={<NovoRegistro/>}/>
                             <Route path="galeria" element={<GaleriaUsuario/>}/>
                             <Route path="novo_ponto" element={<NovoPonto/>}/>
-                            <Route path="estatisticas" element={<Estatisticas/>}/>
                             <Route path="edita_perfil" element={<EditaPerfil/>}/>
                         </Route>
-
                         <Route path="/registro" element={<Registro/>}/>
                         <Route path="/recuperar_senha" element={<SenhaEsquecida/>}/>
                         <Route path="/reset_senha/:token" element={<ResetSenha/>}/>

@@ -32,7 +32,9 @@ class Login extends Component {
             password: this.state.password
         }
 
-        axios.post('/login', data)
+        axios.get('../sanctum/csrf-cookie')
+            .then(()=>{
+                axios.post('/login', data)
                     .then((response) => {
                         localStorage.setItem('token', response.data.token);
                         this.setState({loggedIn: true});
@@ -47,6 +49,12 @@ class Login extends Component {
                         this.setState({hasError:true});
                         this.setState({modalShow:true});
                     })
+            })
+            .catch((error)=>{
+                this.setState({message: error.response.data.message});
+                this.setState({hasError:true});
+                this.setState({modalShow:true});
+            })
     }
 
     handleOkButton = () => {
