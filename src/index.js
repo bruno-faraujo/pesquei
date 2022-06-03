@@ -9,9 +9,11 @@ import axios from "axios";
 import {BrowserRouter} from "react-router-dom";
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'https://api.pesquei.com/api';
-//axios.defaults.baseURL = 'http://localhost:8000/api';
+//axios.defaults.baseURL = 'https://api.pesquei.com/api';
+axios.defaults.baseURL = 'http://localhost:8000/api';
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+document.cookie = 'pesqueicom_session=; Max-Age=0;path=/;';
+document.cookie = 'XSRF-TOKEN=; Max-Age=0;path=/;';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
