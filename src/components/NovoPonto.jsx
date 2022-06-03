@@ -64,16 +64,16 @@ function NovoPonto() {
                 (error) => {
                     switch(error.code) {
                         case error.PERMISSION_DENIED:
-                            setMessage("User denied the request for Geolocation.")
+                            setMessage("A Geolocalização foi negada pelo usuário.")
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            setMessage("Location information is unavailable.")
+                            setMessage("Localização indisponível.")
                             break;
                         case error.TIMEOUT:
-                            setMessage("The request to get user location timed out.")
+                            setMessage("Tempo de espera excedido.")
                             break;
                         case error.UNKNOWN_ERROR:
-                            setMessage("An unknown error occurred.")
+                            setMessage("Erro desconhecido.")
                             break;
                     }
                     setHasError(true)
@@ -81,7 +81,7 @@ function NovoPonto() {
                 },
                 {
                     enableHighAccuracy: true,
-                    timeout: 30000
+                    timeout: 100000
                 }
             )
         } else {
@@ -92,7 +92,6 @@ function NovoPonto() {
     }, [currentPosition])
 
     const handleOkButton = () => {
-        document.documentElement.scrollTo(0, 0)
         if (hasError) {
             setModalShow(false)
         } else {
