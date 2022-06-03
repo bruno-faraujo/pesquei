@@ -18,6 +18,7 @@ class Perfil extends Component {
             peixe_mais_pescado: "",
             peixe_mais_pescado_qtd: ""
         };
+
     }
 
     checkProps = () => {
@@ -63,7 +64,7 @@ class Perfil extends Component {
 
     render() {
 
-        if (this.context.loggedIn === false) {
+        if (!this.context.loggedIn) {
             return <Navigate to="/login"/>
         }
 
@@ -99,10 +100,14 @@ class Perfil extends Component {
                                                                                                                     bg="success">{this.state.pontos_registrados ? this.state.pontos_registrados : ""}</Badge></span></ListGroup.Item>
                                 <ListGroup.Item variant="flush" className="text-nowrap"><i
                                     className="bi bi-journal-text"></i> Peixes registrados <span className="h5"><Badge
-                                    pill bg="success" className="text-end">{this.state.peixes_registrados ? this.state.peixes_registrados : ""}</Badge></span></ListGroup.Item>
+                                    pill bg="success"
+                                    className="text-end">{this.state.peixes_registrados ? this.state.peixes_registrados : ""}</Badge></span></ListGroup.Item>
                                 <ListGroup.Item variant="flush" className="text-nowrap"><i
-                                    className="bi bi-trophy"></i> Peixe mais pescado <br/><span className="text-muted">{this.state.peixe_mais_pescado ? this.state.peixe_mais_pescado : ""} <Badge
-                                    bg="warning" text="dark">{this.state.peixe_mais_pescado_qtd ? this.state.peixe_mais_pescado_qtd : ""}</Badge></span></ListGroup.Item>
+                                    className="bi bi-trophy"></i> Peixe mais pescado <br/><span
+                                    className="text-muted">{this.state.peixe_mais_pescado ? this.state.peixe_mais_pescado : ""}
+                                    <Badge
+                                        bg="warning"
+                                        text="dark">{this.state.peixe_mais_pescado_qtd ? this.state.peixe_mais_pescado_qtd : ""}</Badge></span></ListGroup.Item>
                             </ListGroup>
                         </Card>
                     </Col>
