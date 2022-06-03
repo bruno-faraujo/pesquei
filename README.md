@@ -1,6 +1,24 @@
-# Getting Started with Create React App
+<h1 align="center">Projeto PESQUEI (Frontend [React])</h2>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Sobre o Pesquei
+
+Esse projeto foi idealizado como parte do processo de desenvolvimento proposto pela disciplina Prática Profissional do curso de Análise e Desenvolvimento de Sistemas da UNINASSAU.
+
+O Pesquei é uma aplicação web para pescadores que frequentam locais de pescaria variados e precisam manter um registro desses locais e assim saber quais são os pontos mais produtivos, além de registrar os peixes que foram capturados com fotos e informações detalhadas.
+
+
+- Salva os pontos de pesca com coordenadas geográficas;
+- Registra os peixes capturados nos pontos selecionados;
+- Vincula fotos dos peixes pescados;
+- Os locais de pesca registrados são privados e visíveis apenas para o usuário autenticado que os criou;
+- Informações meteorológicas precisas do local selecionado pelo usuário (apenas Brasil);
+- Galeria global de imagens dos últimos peixes registrados pelos usuários;
+- Galeria pessoal de fotos dos peixes do usuário.
+
+## Informações sobre a arquitetura
+
+Rest API desenvolvida utilizando o framework Laravel versão 9.9.0.
 
 ## Available Scripts
 
@@ -28,43 +46,3 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
