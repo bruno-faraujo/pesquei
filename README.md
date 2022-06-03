@@ -18,7 +18,7 @@ O Pesquei é uma aplicação web para pescadores que frequentam locais de pescar
 
 ## Informações sobre a arquitetura
 
-Rest API desenvolvida utilizando o framework Laravel versão 9.9.0.
+SPA desenvolvida utilizando a biblioteca React versão 18.1.
 
 ## Available Scripts
 
