@@ -30,10 +30,10 @@ SPA desenvolvida utilizando a biblioteca React versão 18.1.
 
 - Clone esse repositório;
 - Crie um arquivo chamado .env e salve-o no diretório raiz da aplicação;
-- Dentro do arquivo .env adicione sua chave da API do Google Maps:
+- Dentro do arquivo .env adicione sua chave da API do Google Maps:<br/>
   -- REACT_APP_GOOGLE_MAPS_API=sua_chave_aqui
 - Através de um terminal de comandos, acesse o diretório raiz da aplicação;
 - Digite o comando: npm install
-- Após a conclusão da instalação de todos os módulos, você pode usar os seguintes comandos:
-  -- npm start (inicia a aplicação em modo desenvolvimento);
+- Após a conclusão da instalação de todos os módulos, você pode usar os seguintes comandos:<br/>
+  -- npm start (inicia a aplicação em modo desenvolvimento);<br/>
   -- npm run build (Cria um pacote preparado para ser usado em produção, os arquivos serão salvos no diretório build).
