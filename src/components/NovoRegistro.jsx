@@ -84,16 +84,16 @@ function NovoRegistro() {
                 (error) => {
                     switch (error.code) {
                         case error.PERMISSION_DENIED:
-                            setMessage("User denied the request for Geolocation.")
+                            setMessage("A Geolocalização foi negada pelo usuário.")
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            setMessage("Location information is unavailable.")
+                            setMessage("Localização indisponível.")
                             break;
                         case error.TIMEOUT:
-                            setMessage("The request to get user location timed out.")
+                            setMessage("Tempo de espera excedido.")
                             break;
                         case error.UNKNOWN_ERROR:
-                            setMessage("An unknown error occurred.")
+                            setMessage("Erro desconhecido.")
                             break;
                     }
                     setHasError(true)
@@ -101,7 +101,7 @@ function NovoRegistro() {
                 },
                 {
                     enableHighAccuracy: true,
-                    timeout: 60000
+                    timeout: 100000
                 }
             )
         } else {
@@ -140,7 +140,6 @@ function NovoRegistro() {
     }
 
     const handleSubmit = (e) => {
-        document.documentElement.scrollTo(0, 0)
         setSubmitting(true)
         e.preventDefault();
 
@@ -188,7 +187,6 @@ function NovoRegistro() {
     }
 
     const handleOkButton = () => {
-        document.documentElement.scrollTo(0, 0)
         if (semPontos) {
             navigate("/usuario", {replace: true});
         }
