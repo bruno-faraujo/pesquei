@@ -126,7 +126,8 @@ function NovoPonto() {
                 longitude: selectedPonto.lng,
                 nome: e.target.nome.value,
             }
-
+            axios.get('../sanctum/csrf-cookie')
+                .then(()=> {
             axios.post('/novo_ponto', data)
                 .then((response) => {
                     setMessage(response.data.message)
@@ -143,6 +144,7 @@ function NovoPonto() {
                     setModalShow(true);
                     setSubmitting(false);
                 })
+        })
         }
     }
 

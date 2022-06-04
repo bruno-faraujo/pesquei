@@ -21,23 +21,25 @@ export default function ResetSenha(props) {
 
     const formSubmit = (e) => {
         e.preventDefault();
-
-        axios.post('/change_password', data)
-            .then((response) => {
-                document.getElementById('reset-senha-form').reset();
-                setMessage(response.data.message);
-                setHasError(false);
-                setModalShow(true);
-            })
-            .catch((error) => {
-                document.getElementById('reset-senha-form').reset();
-                try {
-                    setMessage(error.response.data.errors.password.map((item)=>(<p>{item}</p>)));
-                } catch {
-                    setMessage(error.response.data.message);
-                }
-                setHasError(true)
-                setModalShow(true);
+        axios.get('../sanctum/csrf-cookie')
+            .then(()=> {
+                axios.post('/change_password', data)
+                    .then((response) => {
+                        document.getElementById('reset-senha-form').reset();
+                        setMessage(response.data.message);
+                        setHasError(false);
+                        setModalShow(true);
+                    })
+                    .catch((error) => {
+                        document.getElementById('reset-senha-form').reset();
+                        try {
+                            setMessage(error.response.data.errors.password.map((item) => (<p>{item}</p>)));
+                        } catch {
+                            setMessage(error.response.data.message);
+                        }
+                        setHasError(true)
+                        setModalShow(true);
+                    })
             })
 
     }

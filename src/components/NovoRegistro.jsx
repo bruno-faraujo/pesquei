@@ -168,21 +168,24 @@ function NovoRegistro() {
                 'Content-Type': 'multipart/form-data'
             },
         };
-        axios.post('/novo_pescado', formData, config)
-            .then((response) => {
-                setMessage(response.data.message)
-                setHasError(false);
-                setModalShow(true);
-            })
-            .catch((error) => {
-                try {
-                    setMessage(error.data.errors.foto.map((item) => (<p>{item}</p>)))
-                } catch {
-                    setMessage(error.response.data.message);
-                }
-                setSubmitting(false)
-                setHasError(true);
-                setModalShow(true);
+        axios.get('../sanctum/csrf-cookie')
+            .then(()=> {
+                axios.post('/novo_pescado', formData, config)
+                    .then((response) => {
+                        setMessage(response.data.message)
+                        setHasError(false);
+                        setModalShow(true);
+                    })
+                    .catch((error) => {
+                        try {
+                            setMessage(error.data.errors.foto.map((item) => (<p>{item}</p>)))
+                        } catch {
+                            setMessage(error.response.data.message);
+                        }
+                        setSubmitting(false)
+                        setHasError(true);
+                        setModalShow(true);
+                    })
             })
     }
 

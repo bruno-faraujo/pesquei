@@ -36,25 +36,27 @@ class Registro extends Component {
             password: this.state.password,
             password_confirmation: this.state.password_confirmation
         }
+        axios.get('../sanctum/csrf-cookie')
+            .then(()=> {
+                axios.post('/register', data)
+                    .then((response) => {
+                        localStorage.setItem('token', response.data.token);
+                        this.setState({user: response.data})
+                        let fname = response.data.name.split(' ');
+                        this.setState({firstname: fname[0]});
+                        this.setState({message: ''});
+                        this.setState({hasError: false});
+                        this.setState({modalShow: true});
+                    })
+                    .catch((error) => {
+                        try {
+                            this.setState({message: error.response.data.message});
+                        } catch {
 
-        axios.post('/register', data)
-            .then((response) => {
-                localStorage.setItem('token', response.data.token);
-                this.setState({user:response.data})
-                let fname = response.data.name.split(' ');
-                this.setState({firstname:fname[0]});
-                this.setState({message:''});
-                this.setState({hasError:false});
-                this.setState({modalShow:true});
-            })
-            .catch((error) => {
-                try {
-                    this.setState({message:error.response.data.message});
-                } catch {
-
-                }
-                this.setState({hasError:true});
-                this.setState({modalShow:true});
+                        }
+                        this.setState({hasError: true});
+                        this.setState({modalShow: true});
+                    })
             })
     }
 

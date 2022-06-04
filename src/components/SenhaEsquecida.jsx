@@ -21,21 +21,26 @@ class SenhaEsquecida extends Component {
             email: this.state.email
         }
 
-        axios.post('/reset_password', data)
-            .then((response) => {
-               document.getElementById("form-senha-esquecida").reset();
-                this.setState({message:response.data.message});
-                this.setState({hasError:false});
-                this.setState({modalShow:true});
-            })
-            .catch((error) => {
-                try {
-                    this.setState({message:error.response.data.errors.password.map((item)=>(<p>{item}</p>))});
-                } catch {
-                    this.setState({message:error.response.data.message});
-                }
-                this.setState({hasError:true});
-                this.setState({modalShow:true});
+        axios.get('../sanctum/csrf-cookie')
+            .then(()=> {
+                axios.post('/reset_password', data)
+                    .then((response) => {
+                        document.getElementById("form-senha-esquecida").reset();
+                        this.setState({message: response.data.message});
+                        this.setState({hasError: false});
+                        this.setState({modalShow: true});
+                    })
+                    .catch((error) => {
+                        try {
+                            this.setState({
+                                message: error.response.data.errors.password.map((item) => (<p>{item}</p>))
+                            });
+                        } catch {
+                            this.setState({message: error.response.data.message});
+                        }
+                        this.setState({hasError: true});
+                        this.setState({modalShow: true});
+                    })
             })
     }
 

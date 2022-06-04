@@ -61,21 +61,23 @@ function EditaPerfil() {
         if (passwordConfirmation) {
             data.password_confirmation = passwordConfirmation
         }
+        axios.get('../sanctum/csrf-cookie')
+            .then(() => {
+                axios.post("/update_user", data)
+                    .then((response) => {
+                        setHasError(false);
+                        setMessage(response.data.message);
+                        setModalShow(true);
+                        setSubmitting(false);
 
-            axios.post("/update_user", data)
-                .then((response) => {
-                    setHasError(false);
-                    setMessage(response.data.message);
-                    setModalShow(true);
-                    setSubmitting(false);
+                    })
+                    .catch((error) => {
+                        setHasError(true);
+                        setMessage(error.response.data.message)
+                        setModalShow(true)
+                    })
 
-                })
-                .catch((error) => {
-                    setHasError(true);
-                    setMessage(error.response.data.message)
-                    setModalShow(true)
-                })
-
+            })
     }
 
 

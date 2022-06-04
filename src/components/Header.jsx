@@ -52,13 +52,23 @@ class Header extends Component {
                         this.setLoggedIn(true);
                     })
                     .catch((error) => {
-                        console.log(error.response.data.message);
+                        this.clearUser();
                     })
             })
             .catch((error) => {
-                console.log(error.response.data);
+                this.clearUser();
             })
     }
+
+    clearUser = () => {
+        localStorage.removeItem('token');
+        document.cookie = 'pesqueicom_session=; Max-Age=0;path=/;';
+        document.cookie = 'XSRF-TOKEN=; Max-Age=0;path=/;';
+        this.setUser({});
+        this.setLoggedIn(false);
+
+    }
+
 
     componentDidMount() {
         this.getUser();

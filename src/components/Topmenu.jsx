@@ -16,13 +16,15 @@ class Topmenu extends Component {
     static contextType = UserContext;
 
     logOut = () => {
-
-        axios.post('/logout', {})
-            .then((response) => {
-                this.clearUser();
-            })
-            .catch((error) => {
-                this.clearUser();
+        axios.get('../sanctum/csrf-cookie')
+            .then(()=> {
+                axios.post('/logout', {})
+                    .then((response) => {
+                        this.clearUser();
+                    })
+                    .catch((error) => {
+                        this.clearUser();
+                    })
             })
     }
 

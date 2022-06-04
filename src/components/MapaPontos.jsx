@@ -54,19 +54,22 @@ function MapaPontos() {
                 }
             )
         } else if (localStorage.getItem('clima.cidade') && localStorage.getItem('clima.estado')) {
-            axios.post("/request_coordenadas", {
-                cidade: localStorage.getItem('clima.cidade'),
-                estado: localStorage.getItem('clima.estado')
-            })
-                .then((response) => {
-                    setCurrentPosition({
-                        lat: parseFloat(response.data.lat),
-                        lng: parseFloat(response.data.lon)
+            axios.get('../sanctum/csrf-cookie')
+                .then(()=> {
+                    axios.post("/request_coordenadas", {
+                        cidade: localStorage.getItem('clima.cidade'),
+                        estado: localStorage.getItem('clima.estado')
                     })
+                        .then((response) => {
+                            setCurrentPosition({
+                                lat: parseFloat(response.data.lat),
+                                lng: parseFloat(response.data.lon)
+                            })
 
-                    if (!center) {
-                        setCenter(currentPosition)
-                    }
+                            if (!center) {
+                                setCenter(currentPosition)
+                            }
+                        })
                 })
         } else {
             setCurrentPosition({lat: parseFloat(-6.640814), lng: parseFloat(-34.757842)})
