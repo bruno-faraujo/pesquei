@@ -6,7 +6,7 @@ import {UserContext} from "./UserContext";
 
 export default function ResetSenha(props) {
 
-    const userContext = useContext(UserContext);
+    const {loggedIn} = useContext(UserContext);
     const params = useParams();
     const navigate = useNavigate();
     const [modalShow, setModalShow] = useState(false);
@@ -21,9 +21,12 @@ export default function ResetSenha(props) {
 
     const formSubmit = (e) => {
         e.preventDefault();
-        axios.get('../sanctum/csrf-cookie')
-            .then(()=> {
-                axios.post('/change_password', data)
+                axios.post('/change_password', data, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    }
+                )
                     .then((response) => {
                         document.getElementById('reset-senha-form').reset();
                         setMessage(response.data.message);
@@ -40,8 +43,6 @@ export default function ResetSenha(props) {
                         setHasError(true)
                         setModalShow(true);
                     })
-            })
-
     }
 
     const handleOkButton = () => {
@@ -77,7 +78,7 @@ export default function ResetSenha(props) {
     }
 
     useEffect(() => {
-        if (userContext.loggedIn) {
+        if (loggedIn) {
             navigate("/login", { replace: true });
         }
     })

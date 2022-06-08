@@ -21,8 +21,6 @@ class SenhaEsquecida extends Component {
             email: this.state.email
         }
 
-        axios.get('../sanctum/csrf-cookie')
-            .then(()=> {
                 axios.post('/reset_password', data)
                     .then((response) => {
                         document.getElementById("form-senha-esquecida").reset();
@@ -41,7 +39,6 @@ class SenhaEsquecida extends Component {
                         this.setState({hasError: true});
                         this.setState({modalShow: true});
                     })
-            })
     }
 
     handleOkButton = () => {
@@ -109,7 +106,7 @@ class SenhaEsquecida extends Component {
                                         </Button>
                                     </div>
                                     <br/>
-                                    <Card.Text className="text-muted">Não possui conta? <Link to="/login" style={{textDecoration: "none"}}>Registre-se</Link></Card.Text>
+                                    <Card.Text className="text-muted">Não possui uma conta? <Link to="/login" style={{textDecoration: "none"}}>Registre-se</Link></Card.Text>
                                 </Card.Body>
                             </Form>
                         </Card>
