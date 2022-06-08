@@ -13,7 +13,7 @@ class Footer extends Component {
                             <div className="col-xs-12 col-sm-6 col-md-3">
                                 <div className="widget subscribe no-box">
                                     <h5 className="widget-title">PESQUEI.COM<span></span></h5>
-                                    <p>Aqui você mantém um registro atualizado de todas as suas pescarias. </p>
+                                    <p>Aqui você mantém um registro completo e atualizado das suas pescarias. </p>
                                 </div>
                             </div>
 
@@ -35,8 +35,8 @@ class Footer extends Component {
 
                             <div className="col-xs-12 col-sm-6 col-md-3">
                                 <div className="widget no-box">
-                                    <h5 className="widget-title">Comece já<span></span></h5>
-                                    <p>Tenha acesso imediato a todos os recursos.</p>
+                                    <h5 className="widget-title">Comece já!<span></span></h5>
+                                    <p>Tenha acesso imediato a todos os recursos gratuitamente.</p>
                                     <Link to="/registro"><Button
                                         className="btn btn-warning text-dark">Cadastre-se</Button></Link>
                                 </div>

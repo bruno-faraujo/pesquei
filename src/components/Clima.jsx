@@ -14,8 +14,6 @@ function Clima() {
 
     const getClima = (e) => {
         e.preventDefault()
-        axios.get('../sanctum/csrf-cookie')
-            .then(() => {
                 axios.post("/request_clima_info", {cidade, estado: nomeEstado})
                     .then((response) => {
                         setClima(response.data);
@@ -29,7 +27,6 @@ function Clima() {
                     .catch((error) => {
                         console.log(error);
                     })
-            })
     }
 
     const mudarCidade = () => {
@@ -49,13 +46,20 @@ function Clima() {
 
 
     useEffect(() => {
-        if (localStorage.getItem('clima.cidade') && localStorage.getItem('clima.estado')) {
+        if (localStorage.getItem('clima.cidade') === null && localStorage.getItem('clima.estado') === null) {
+
+            getSiglasUf();
+
+            if (estado) {
+                getCidades(estado)
+            }
+
+
+        } else {
             const cid = localStorage.getItem('clima.cidade');
             const est = localStorage.getItem('clima.estado');
             setEstado(est);
             setCidade(cid);
-            axios.get('../sanctum/csrf-cookie')
-                .then(() => {
                     axios.post("/request_clima_info", {cidade: cid, estado: est})
                         .then((response) => {
                             setClima(response.data);
@@ -69,11 +73,7 @@ function Clima() {
                         .catch((error) => {
                             console.log(error);
                         })
-                })
         }
-
-        getSiglasUf();
-        getCidades(estado)
 
     }, [estado])
 

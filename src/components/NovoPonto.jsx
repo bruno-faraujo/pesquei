@@ -3,6 +3,7 @@ import {Button, Card, Col, Form, Modal, Row, Stack} from "react-bootstrap";
 import {GoogleMap, Marker, MarkerClusterer, useJsApiLoader} from "@react-google-maps/api";
 import Loading from "./Loading";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 function NovoPonto() {
 
@@ -14,6 +15,7 @@ function NovoPonto() {
     const [pontos, setPontos] = useState();
     const [selectedPonto, setSelectedPonto] = useState();
     const [submitting, setSubmitting] = useState(false);
+    const navigate = useNavigate();
 
     const [mapInstance, setMapInstance] = useState(null);
 
@@ -30,7 +32,11 @@ function NovoPonto() {
     }
 
     useEffect(() => {
-        axios.get("/pontos")
+        axios.get("/pontos", {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
             .then((response) => {
                 setPontos(response.data)
             })
@@ -81,7 +87,7 @@ function NovoPonto() {
                 },
                 {
                     enableHighAccuracy: true,
-                    timeout: 100000
+                    timeout: 300000
                 }
             )
         } else {
@@ -92,10 +98,12 @@ function NovoPonto() {
     }, [currentPosition])
 
     const handleOkButton = () => {
+        document.documentElement.scrollTo(0, 0)
         if (hasError) {
             setModalShow(false)
         } else {
             setModalShow(false)
+         //   navigate("/usuario", { replace: true });
             window.location.reload();
         }
     }
@@ -126,9 +134,11 @@ function NovoPonto() {
                 longitude: selectedPonto.lng,
                 nome: e.target.nome.value,
             }
-            axios.get('../sanctum/csrf-cookie')
-                .then(()=> {
-            axios.post('/novo_ponto', data)
+            axios.post('/novo_ponto', data, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
                 .then((response) => {
                     setMessage(response.data.message)
                     setHasError(false);
@@ -144,7 +154,6 @@ function NovoPonto() {
                     setModalShow(true);
                     setSubmitting(false);
                 })
-        })
         }
     }
 

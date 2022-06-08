@@ -10,7 +10,11 @@ function GaleriaUsuario() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get('/galeria_pescador')
+        axios.get('/galeria_pescador', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
             .then((response) => {
                 setGaleria(Object.values(response.data))
                 setLoading(false);

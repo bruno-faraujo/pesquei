@@ -1,12 +1,11 @@
-import React, {Fragment, useContext, useState} from 'react';
+import React, {Fragment, useContext, useEffect, useState} from 'react';
 import {Button, Card, Col, Form, Modal, Row} from "react-bootstrap";
 import {UserContext} from "./UserContext";
-import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 function EditaPerfil() {
 
-    const user = useContext(UserContext);
+    const {user} = useContext(UserContext);
     const [perfilEnabled, setPerfilEnabled] = useState(false);
     const [changePassword, setChangePassword] = useState(false);
     const [name, setName] = useState();
@@ -14,7 +13,7 @@ function EditaPerfil() {
     const [password, setPassword] = useState();
     const [passwordConfirmation, setPasswordConfirmation] = useState();
     const [modalShow, setModalShow] = useState(false);
-    const [hasError,setHasError] = useState();
+    const [hasError, setHasError] = useState();
     const [message, setMessage] = useState();
     const [submitting, setSubmitting] = useState(false);
 
@@ -36,6 +35,11 @@ function EditaPerfil() {
         }
     }
 
+    useEffect(() => {
+        setName(user.name);
+        setEmail(user.email);
+    }, [user]);
+
     const handlePerfilSubmit = (e) => {
         setSubmitting(true);
         e.preventDefault();
@@ -45,13 +49,13 @@ function EditaPerfil() {
         if (name) {
             data.name = name
         } else {
-            data.name = user.user.name
+            data.name = user.name
         }
 
         if (email) {
             data.email = email
         } else {
-            data.email = user.user.email
+            data.email = user.email
         }
 
         if (password) {
@@ -61,23 +65,23 @@ function EditaPerfil() {
         if (passwordConfirmation) {
             data.password_confirmation = passwordConfirmation
         }
-        axios.get('../sanctum/csrf-cookie')
-            .then(() => {
-                axios.post("/update_user", data)
-                    .then((response) => {
-                        setHasError(false);
-                        setMessage(response.data.message);
-                        setModalShow(true);
-                        setSubmitting(false);
-
-                    })
-                    .catch((error) => {
-                        setHasError(true);
-                        setMessage(error.response.data.message)
-                        setModalShow(true)
-                    })
-
+        axios.post("/update_user", data, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+            .then((response) => {
+                setHasError(false);
+                setMessage(response.data.message);
+                setModalShow(true);
+                setSubmitting(false);
             })
+            .catch((error) => {
+                setHasError(true);
+                setMessage(error.response.data.message)
+                setModalShow(true)
+            })
+
     }
 
 
@@ -121,16 +125,16 @@ function EditaPerfil() {
                             <Card.Text>
                                 <Form.Group className="mb-3" controlId="name">
                                     <Form.Label className={"fw-bold"}>Seu nome</Form.Label>
-                                    <Form.Control type="text" value={name ? name : user.user.name}
-                                                  onChange={e=>setName(e.target.value)}
+                                    <Form.Control type="text" value={name || ""}
+                                                  onChange={e => setName(e.target.value)}
                                                   disabled={perfilEnabled ? false : true}/>
                                 </Form.Group>
                             </Card.Text>
                             <Card.Text>
                                 <Form.Group className="mb-3" controlId="email">
                                     <Form.Label className={"fw-bold"}>Endereço de email</Form.Label>
-                                    <Form.Control type="email" value={email ? email : user.user.email}
-                                                  onChange={e=>setEmail(e.target.value)}
+                                    <Form.Control type="email" value={email || ""}
+                                                  onChange={e => setEmail(e.target.value)}
                                                   disabled={perfilEnabled ? false : true}/>
                                 </Form.Group>
                             </Card.Text>
@@ -158,7 +162,7 @@ function EditaPerfil() {
                                             <Form.Group className="mb-3" controlId="password_confirmation">
                                                 <Form.Label>Confirme a senha digitada</Form.Label>
                                                 <Form.Control type="password"
-                                                              onChange={e=>setPasswordConfirmation(e.target.value)}
+                                                              onChange={e => setPasswordConfirmation(e.target.value)}
                                                               disabled={perfilEnabled ? false : true}/>
                                             </Form.Group>
                                         </Card.Text> : ""}
@@ -173,21 +177,8 @@ function EditaPerfil() {
                     </Form>
                 </Card>
             </Col>
-            <Col className={"py-5"}>
-                <Card>
-                    <Card.Header as="h5">Pontos de pesca</Card.Header>
-                    <Card.Body>
-                        <Card.Title>Special title treatment</Card.Title>
-                        <Card.Text>
-                            With supporting text below as a natural lead-in to additional content.
-                        </Card.Text>
-                        <Button variant="primary">Go somewhere</Button>
-                    </Card.Body>
-                </Card>
-            </Col>
         </Fragment>
-    )
-        ;
+    );
 }
 
 export default EditaPerfil;

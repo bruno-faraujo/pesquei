@@ -39,7 +39,11 @@ function NovoRegistro() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get("/pontos")
+        axios.get("/pontos", {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
             .then((response) => {
                 setPontos(response.data)
             })
@@ -101,7 +105,7 @@ function NovoRegistro() {
                 },
                 {
                     enableHighAccuracy: true,
-                    timeout: 100000
+                    timeout: 300000
                 }
             )
         } else {
@@ -165,11 +169,10 @@ function NovoRegistro() {
 
         const config = {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
         };
-        axios.get('../sanctum/csrf-cookie')
-            .then(()=> {
                 axios.post('/novo_pescado', formData, config)
                     .then((response) => {
                         setMessage(response.data.message)
@@ -186,10 +189,10 @@ function NovoRegistro() {
                         setHasError(true);
                         setModalShow(true);
                     })
-            })
     }
 
     const handleOkButton = () => {
+        document.documentElement.scrollTo(0, 0)
         if (semPontos) {
             navigate("/usuario", {replace: true});
         }
@@ -197,6 +200,7 @@ function NovoRegistro() {
             setModalShow(false)
         } else {
             setModalShow(false)
+          //  navigate("/usuario", { replace: true });
             window.location.reload();
         }
     }

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Route, Routes} from "react-router-dom";
 import {UserContext} from "./UserContext";
 import Docs from "./Docs";
@@ -14,76 +14,45 @@ import NovoRegistro from "./NovoRegistro";
 import GaleriaUsuario from "./GaleriaUsuario";
 import NovoPonto from "./NovoPonto";
 import EditaPerfil from "./EditaPerfil";
+import ProtectedRoute from "./ProtectedRoute";
 
 
-class Header extends Component {
+function Header() {
 
-    constructor(props) {
-        super(props);
+    const {user, login, logout, apiLogout} = useContext(UserContext);
 
-        this.setUser = this.setUser.bind(this);
-        this.getUser = this.getUser.bind(this);
-        this.setLoggedIn = this.setLoggedIn.bind(this);
+    const fetchUser = () => {
 
-        this.state = {
-            user: {},
-            loggedIn: false,
-            setUser: this.setUser,
-            setLoggedIn: this.setLoggedIn,
-            getUser: this.getUser
+        if (typeof localStorage.getItem('token') === 'undefined' || localStorage.getItem('token') === null) {
+            logout();
+        } else {
+
+            axios.post("/user", {}, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+                .then((response)=>{
+                    login(response.data.user)
+                })
+                .catch(()=>{
+                    apiLogout();
+                })
         }
     }
 
-    setUser = (user) => {
-        this.setState({user: user})
-    }
+    useEffect(()=>{
+        fetchUser();
+    },[])
 
-    setLoggedIn = (bool) => {
-        this.setState({loggedIn: bool})
-    }
-
-
-    getUser = () => {
-        axios.get('../sanctum/csrf-cookie')
-            .then(()=> {
-                axios.post('/user', {})
-                    .then((response) => {
-                        this.setUser(response.data);
-                        this.setLoggedIn(true);
-                    })
-                    .catch((error) => {
-                        this.clearUser();
-                    })
-            })
-            .catch((error) => {
-                this.clearUser();
-            })
-    }
-
-    clearUser = () => {
-        localStorage.removeItem('token');
-        document.cookie = 'pesqueicom_session=; Max-Age=0;path=/;';
-        document.cookie = 'XSRF-TOKEN=; Max-Age=0;path=/;';
-        this.setUser({});
-        this.setLoggedIn(false);
-
-    }
-
-
-    componentDidMount() {
-        this.getUser();
-    }
-
-    render() {
         return (
-            <UserContext.Provider value={this.state}>
                 <header>
                     <Topmenu/>
                     <Routes>
                         <Route path="/" element={<App/>}/>
                         <Route path="/docs" element={<Docs/>}/>
                         <Route path="/login" element={<Login/>}/>
-                        <Route path="/usuario" element={<Perfil/>}>
+                        <Route path="/usuario" element={<ProtectedRoute user={user}><Perfil/></ProtectedRoute>}>
                             <Route path="novo_registro" element={<NovoRegistro/>}/>
                             <Route path="galeria" element={<GaleriaUsuario/>}/>
                             <Route path="novo_ponto" element={<NovoPonto/>}/>
@@ -95,9 +64,6 @@ class Header extends Component {
                         <Route path="*" element={<App/>}/>
                     </Routes>
                 </header>
-            </UserContext.Provider>
         );
     }
-}
-
 export default Header;
