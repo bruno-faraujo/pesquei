@@ -10,8 +10,8 @@ import {BrowserRouter} from "react-router-dom";
 import {UserProvider} from "./components/UserContext";
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'https://api.pesquei.com/api';
-//axios.defaults.baseURL = 'http://localhost:8000/api';
+//axios.defaults.baseURL = 'https://api.pesquei.com/api';
+axios.defaults.baseURL = 'http://localhost:8000/api';
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
