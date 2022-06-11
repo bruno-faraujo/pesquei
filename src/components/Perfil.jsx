@@ -33,6 +33,7 @@ function Perfil() {
     }
 
     useEffect(() => {
+        window.scrollTo(0, 0)
         getStatus();
     }, [])
 

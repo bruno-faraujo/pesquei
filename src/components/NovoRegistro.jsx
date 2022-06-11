@@ -192,7 +192,6 @@ function NovoRegistro() {
     }
 
     const handleOkButton = () => {
-        document.documentElement.scrollTo(0, 0)
         if (semPontos) {
             navigate("/usuario", {replace: true});
         }

@@ -21,7 +21,6 @@ function Registro() {
     const formSubmit = (e) => {
 
         setUserLoading(true);
-
         e.preventDefault();
 
         const data = {
@@ -32,10 +31,11 @@ function Registro() {
         }
         axios.post('/register', data)
             .then((response) => {
-                login(response.data)
-                let fname = response.data.name.split(' ');
+                localStorage.setItem('token', response.data.token)
+                login(response.data.user)
+                let fname = response.data.user.name.split(' ');
                 setFirstname(fname[0]);
-                setMessage("");
+                setMessage(null);
                 setHasError(false);
                 setModalShow(true);
             })
@@ -101,6 +101,7 @@ function Registro() {
                                         <Form.Group className="mb-3" controlId="name">
                                             <Card.Title><Form.Label>Nome</Form.Label></Card.Title>
                                             <Form.Control type="text" placeholder="Digite o seu nome..." required
+                                                          value={name || ""}
                                                           onChange={(e) => {
                                                               setName(e.target.value)
                                                           }}/>
@@ -109,6 +110,7 @@ function Registro() {
                                         <Form.Group className="mb-3" controlId="email">
                                             <Card.Title><Form.Label>Endereço de e-mail</Form.Label></Card.Title>
                                             <Form.Control type="email" placeholder="Seu e-mail..." required
+                                                          value={email || ""}
                                                           onChange={(e) => {
                                                               setEmail(e.target.value)
                                                           }}/>
@@ -120,6 +122,7 @@ function Registro() {
                                         <Form.Group className="mb-3" controlId="password">
                                             <Card.Title><Form.Label>Senha</Form.Label></Card.Title>
                                             <Form.Control type="password" placeholder="Sua senha..." required
+                                                          value={password || ""}
                                                           onChange={(e) => {
                                                               setPassword(e.target.value)
                                                           }}/>
@@ -127,7 +130,9 @@ function Registro() {
                                         <Form.Group className="mb-3" controlId="password_confirmation">
                                             <Card.Title><Form.Label>Confirme a senha</Form.Label></Card.Title>
                                             <Form.Control type="password" placeholder="Digite a senha novamente..."
-                                                          required onChange={(e) => {
+                                                          required
+                                                          value={password_confirmation || ""}
+                                                          onChange={(e) => {
                                                 setPassword_confirmation(e.target.value)
                                             }}/>
                                         </Form.Group>
@@ -150,5 +155,4 @@ function Registro() {
         </div>
     );
 }
-
 export default Registro;

@@ -98,7 +98,6 @@ function NovoPonto() {
     }, [currentPosition])
 
     const handleOkButton = () => {
-        document.documentElement.scrollTo(0, 0)
         if (hasError) {
             setModalShow(false)
         } else {
