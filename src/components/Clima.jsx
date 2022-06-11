@@ -11,30 +11,43 @@ function Clima() {
     const [siglas, setSiglas] = useState([]);
     const [nomeEstado, setNomeEstado] = useState();
     const [iconUrl, setIconUrl] = useState();
+    const [hidePrevisaoButton, setHidePrevisaoButton] = useState(false);
 
     const getClima = (e) => {
         e.preventDefault()
-                axios.post("/request_clima_info", {cidade, estado: nomeEstado})
+        axios.post("/request_clima_info", {cidade, estado: nomeEstado})
+            .then((response) => {
+                setClima(response.data);
+                localStorage.setItem('clima.cidade', response.data.cidade);
+                localStorage.setItem('clima.estado', response.data.estado);
+                localStorage.setItem('clima.cidade_id', response.data.cidade_id);
+                axios.post("/request_clima_icon_url", {icon: response.data.weather_icon})
                     .then((response) => {
-                        setClima(response.data);
-                        localStorage.setItem('clima.cidade', response.data.cidade);
-                        localStorage.setItem('clima.estado', response.data.estado);
-                        axios.post("/request_clima_icon_url", {icon: response.data.weather_icon})
-                            .then((response) => {
-                                setIconUrl(response.data)
-                            })
+                        setIconUrl(response.data)
                     })
-                    .catch((error) => {
-                        console.log(error);
-                    })
+            })
+            .catch((error) => {
+                console.log(error);
+            })
     }
 
     const mudarCidade = () => {
         localStorage.removeItem('clima.cidade');
         localStorage.removeItem('clima.estado');
+        localStorage.removeItem('clima.cidade_id');
         setCidade(null);
         setEstado(null);
         setClima(null);
+    }
+
+    const previsaoCompleta = () => {
+
+        if (localStorage.getItem('clima.cidade_id') === 'undefined' || localStorage.getItem('clima.cidade_id') === null) {
+            setHidePrevisaoButton(true);
+        } else {
+            const cidadeId = localStorage.getItem('clima.cidade_id');
+            window.open("https://openweathermap.org/city/" + cidadeId + "?units=metric&lang=pt_br")
+        }
     }
 
     const getSiglasUf = () => {
@@ -46,6 +59,15 @@ function Clima() {
 
 
     useEffect(() => {
+        if (localStorage.getItem('clima.cidade') === 'undefined') {
+            localStorage.removeItem('clima.cidade');
+        }
+        if (localStorage.getItem('clima.estado') === 'undefined') {
+            localStorage.removeItem('clima.estado');
+        }
+        if (localStorage.getItem('clima.cidade_id') === 'undefined') {
+            localStorage.removeItem('clima.cidade_id');
+        }
         if (localStorage.getItem('clima.cidade') === null && localStorage.getItem('clima.estado') === null) {
 
             getSiglasUf();
@@ -58,21 +80,20 @@ function Clima() {
         } else {
             const cid = localStorage.getItem('clima.cidade');
             const est = localStorage.getItem('clima.estado');
-            setEstado(est);
-            setCidade(cid);
-                    axios.post("/request_clima_info", {cidade: cid, estado: est})
+            axios.post("/request_clima_info", {cidade: cid, estado: est})
+                .then((response) => {
+                    setClima(response.data);
+                    localStorage.setItem('clima.cidade', response.data.cidade);
+                    localStorage.setItem('clima.estado', response.data.estado);
+                    localStorage.setItem('clima.cidade_id', response.data.cidade_id);
+                    axios.post("/request_clima_icon_url", {icon: response.data.weather_icon})
                         .then((response) => {
-                            setClima(response.data);
-                            localStorage.setItem('clima.cidade', response.data.cidade);
-                            localStorage.setItem('clima.estado', response.data.estado);
-                            axios.post("/request_clima_icon_url", {icon: response.data.weather_icon})
-                                .then((response) => {
-                                    setIconUrl(response.data)
-                                })
+                            setIconUrl(response.data)
                         })
-                        .catch((error) => {
-                            console.log(error);
-                        })
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
         }
 
     }, [estado])
@@ -92,7 +113,7 @@ function Clima() {
             <>
                 <Card>
                     <Card.Header><span className="h5 text-nowrap"><i
-                        className="bi bi-pin-map-fill"></i> {clima.cidade}, {clima.estado}</span> <span className="h2"> <Badge
+                        className="bi bi-pin-map-fill"></i> {clima.cidade}, {clima.estado}</span> <span className="h3"> <Badge
                         text="dark" bg="info"><i
                         className="bi bi-thermometer-high"/>{parseFloat(clima.main_temp).toFixed(0)}°C</Badge></span></Card.Header>
                     <Card.Body style={{backgroundColor: "White"}}>
@@ -105,7 +126,7 @@ function Clima() {
                                 <Col sm={6} lg={6} md={12}>
                                     <ListGroup variant="flush" style={{marginBottom: "10px"}}>
                                         <ListGroup.Item
-                                            className="text-nowrap">{clima.weather_description.charAt(0).toUpperCase() + clima.weather_description.slice(1)}</ListGroup.Item>
+                                            className="text-nowrap fw-bold fs-5">{clima.weather_description.charAt(0).toUpperCase() + clima.weather_description.slice(1)}</ListGroup.Item>
                                         <ListGroup.Item className="text-nowrap"><i
                                             className="bi bi-wind"/> Vento {(parseFloat(clima.wind_speed) * 3.6).toFixed(1)} Km/h</ListGroup.Item>
                                         <ListGroup.Item className="text-nowrap"><i
@@ -114,10 +135,20 @@ function Clima() {
                                             ar {clima.main_humidity} %</ListGroup.Item>
                                     </ListGroup>
                                 </Col>
-                                <Col sm={2} lg={2}>
-                                    <Button variant="outline-dark" className="btn btn-sm p-1" onClick={mudarCidade}><i
+                            </Row>
+                            <Row>
+                                <Col className={"py-1"}>
+                                    <Button variant="outline-dark" className="btn btn-sm text-nowrap btn-block"
+                                            onClick={mudarCidade}><i
                                         className="bi bi-arrow-left-right"/> Mudar cidade</Button>
                                 </Col>
+                                {!hidePrevisaoButton ? <Col className={"py-1"}>
+                                    <Button variant="outline-success text-dark"
+                                            className="btn btn-sm text-nowrap btn-block"
+                                            onClick={previsaoCompleta}><i
+                                        className="bi bi-graph-up"/> Previsão completa</Button>
+                                </Col> : ""}
+
                             </Row>
                         </Container>
                     </Card.Body>
