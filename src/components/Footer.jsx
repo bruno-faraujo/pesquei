@@ -27,7 +27,7 @@ class Footer extends Component {
                                         </li>
                                         <li>
                                             <div className="thumb-content"><Link className="footer-link"
-                                                                                 to="/docs">Documentação</Link></div>
+                                                                                 to="/docs">Informações</Link></div>
                                         </li>
                                     </ul>
                                 </div>
