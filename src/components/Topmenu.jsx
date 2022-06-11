@@ -53,7 +53,7 @@ function Topmenu() {
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
                         {perfil}
-                        <NavLink to="/docs" className="nav nav-link">Documentação</NavLink>
+                        <NavLink to="/docs" className="nav nav-link">Informações</NavLink>
                     </Nav>
                     {buttons}
                 </Navbar.Collapse>
