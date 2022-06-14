@@ -30,7 +30,7 @@ function Login() {
             })
             .catch((error) => {
                 logout();
-                setMessage(error.message);
+                setMessage(error.response.data.message);
                 setHasError(true);
                 setModalShow(true);
             })
@@ -81,6 +81,7 @@ function Login() {
                                 <Form.Group className="mb-3" controlId="email">
                                     <Card.Title><Form.Label>Endereço de e-mail</Form.Label></Card.Title>
                                     <Form.Control type="email" placeholder="Seu e-mail..." required
+                                                  value={email || ""}
                                                   onChange={(e) => {
                                                       setEmail(e.target.value)
                                                   }}/>
@@ -92,6 +93,7 @@ function Login() {
                                 <Form.Group className="mb-3" controlId="password">
                                     <Card.Title><Form.Label>Senha</Form.Label></Card.Title>
                                     <Form.Control type="password" placeholder="Sua senha..." required
+                                                  value={password || ""}
                                                   onChange={(e) => {
                                                       setPassword(e.target.value)
                                                   }}/>
