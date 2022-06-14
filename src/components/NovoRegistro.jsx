@@ -199,7 +199,6 @@ function NovoRegistro() {
             setModalShow(false)
         } else {
             setModalShow(false)
-          //  navigate("/usuario", { replace: true });
             window.location.reload();
         }
     }
